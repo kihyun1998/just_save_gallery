@@ -1,6 +1,5 @@
 import Foundation
 import Photos
-import UIKit
 
 /// Handles saving media files to the iOS Photo Library using the Photos framework.
 ///
@@ -20,14 +19,14 @@ internal class GallerySaver {
     ///   - requestPermission: Whether to request permission automatically.
     ///   - completion: Called with the local identifier on success or an error.
     func saveBytes(
-        _ bytes: FlutterStandardTypedData,
+        _ bytes: Data,
         name: String,
         albumName: String?,
         isVideo: Bool,
         requestPermission: Bool,
         completion: @escaping (Result<String, SaveError>) -> Void
     ) {
-        let data = bytes.data
+        let data = bytes
 
         // Write bytes to a temporary file so we can use the same
         // PHAssetCreationRequest flow for both bytes and file paths.
@@ -83,7 +82,8 @@ internal class GallerySaver {
         }
 
         if requestPermission {
-            requestAuthorizationIfNeeded { granted in
+            let needsReadAccess = albumName != nil
+            requestAuthorizationIfNeeded(readWrite: needsReadAccess) { granted in
                 if granted {
                     performSave()
                 } else {
@@ -109,9 +109,15 @@ internal class GallerySaver {
         PHPhotoLibrary.shared().performChanges({
             let request: PHAssetChangeRequest
             if isVideo {
-                request = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: fileURL)!
+                guard let r = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: fileURL) else {
+                    return
+                }
+                request = r
             } else {
-                request = PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: fileURL)!
+                guard let r = PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: fileURL) else {
+                    return
+                }
+                request = r
             }
             let placeholder = request.placeholderForCreatedAsset
             localIdentifier = placeholder?.localIdentifier
@@ -128,7 +134,7 @@ internal class GallerySaver {
             if success, let id = localIdentifier {
                 completion(.success(id))
             } else {
-                let message = error?.localizedDescription ?? "Unknown error"
+                let message = error?.localizedDescription ?? "Failed to create asset"
                 completion(.failure(.unknown(message)))
             }
         }
@@ -156,30 +162,38 @@ internal class GallerySaver {
         return nil
     }
 
-    /// Requests photo library add-only authorization if not already granted.
-    private func requestAuthorizationIfNeeded(completion: @escaping (Bool) -> Void) {
-        let status: PHAuthorizationStatus
+    /// Requests photo library authorization if not already granted.
+    ///
+    /// - Parameter readWrite: When `true`, requests full read/write access
+    ///   (needed for album operations). Otherwise requests add-only access.
+    private func requestAuthorizationIfNeeded(readWrite: Bool, completion: @escaping (Bool) -> Void) {
         if #available(iOS 14, *) {
-            status = PHPhotoLibrary.authorizationStatus(for: .addOnly)
-        } else {
-            status = PHPhotoLibrary.authorizationStatus()
-        }
+            let accessLevel: PHAccessLevel = readWrite ? .readWrite : .addOnly
+            let status = PHPhotoLibrary.authorizationStatus(for: accessLevel)
 
-        switch status {
-        case .authorized, .limited:
-            completion(true)
-        case .notDetermined:
-            if #available(iOS 14, *) {
-                PHPhotoLibrary.requestAuthorization(for: .addOnly) { newStatus in
+            switch status {
+            case .authorized, .limited:
+                completion(true)
+            case .notDetermined:
+                PHPhotoLibrary.requestAuthorization(for: accessLevel) { newStatus in
                     completion(newStatus == .authorized || newStatus == .limited)
                 }
-            } else {
+            default:
+                completion(false)
+            }
+        } else {
+            let status = PHPhotoLibrary.authorizationStatus()
+
+            switch status {
+            case .authorized:
+                completion(true)
+            case .notDetermined:
                 PHPhotoLibrary.requestAuthorization { newStatus in
                     completion(newStatus == .authorized)
                 }
+            default:
+                completion(false)
             }
-        default:
-            completion(false)
         }
     }
 

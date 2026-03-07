@@ -47,5 +47,7 @@
 	<true/>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>This app saves images and videos to your photo library.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app accesses your photo library to save media into albums.</string>
 </dict>
 </plist>

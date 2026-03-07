@@ -35,6 +35,13 @@ Add the following key to your `ios/Runner/Info.plist`:
 <string>This app saves photos and videos to your photo library.</string>
 ```
 
+If you use the `albumName` parameter, you must also add **read/write** access:
+
+```xml
+<key>NSPhotoLibraryUsageDescription</key>
+<string>This app accesses your photo library to save media into albums.</string>
+```
+
 ## Usage
 
 ```dart
@@ -115,7 +122,7 @@ await gallery.saveImage(
 | | Android | iOS |
 |---|---|---|
 | API | MediaStore | PHPhotoLibrary |
-| Permission | `WRITE_EXTERNAL_STORAGE` (API ≤ 28 only) | Add-only (`NSPhotoLibraryAddUsageDescription`) |
+| Permission | `WRITE_EXTERNAL_STORAGE` (API ≤ 28 only) | Add-only (`NSPhotoLibraryAddUsageDescription`), Read/Write if using `albumName` (`NSPhotoLibraryUsageDescription`) |
 | Return value | `content://` URI | Local identifier |
 | Scoped storage | API 29+ with `IS_PENDING` | N/A |
 

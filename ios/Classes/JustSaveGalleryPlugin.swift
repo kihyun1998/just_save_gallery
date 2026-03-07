@@ -48,7 +48,7 @@ public class JustSaveGalleryPlugin: NSObject, FlutterPlugin {
         let requestPermission = args["requestPermission"] as? Bool ?? true
 
         saver.saveBytes(
-            bytes,
+            bytes.data,
             name: name,
             albumName: albumName,
             isVideo: isVideo,
