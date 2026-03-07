@@ -2,6 +2,12 @@ name: just_save_gallery
 description: A lightweight Flutter plugin that saves images and videos to the device gallery. Supports both raw bytes and file path inputs on Android and iOS.
 version: 0.1.0
 homepage: https://github.com/kihyun1998/just_save_gallery
+topics:
+  - gallery
+  - image
+  - video
+  - save
+  - photo
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
