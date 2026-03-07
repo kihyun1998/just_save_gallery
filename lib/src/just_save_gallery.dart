@@ -119,10 +119,10 @@ class JustSaveGallery {
     bool requestPermission = true,
   }) {
     final name = filePath.split('/').last;
-    final ext = name.contains('.') ? '.${name.split('.').last}'.toLowerCase() : '';
-    final mediaType = _kVideoExtensions.contains(ext)
-        ? MediaType.video
-        : MediaType.image;
+    final ext =
+        name.contains('.') ? '.${name.split('.').last}'.toLowerCase() : '';
+    final mediaType =
+        _kVideoExtensions.contains(ext) ? MediaType.video : MediaType.image;
 
     return _saveFile(
       filePath: filePath,

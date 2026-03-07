@@ -11,7 +11,7 @@
 /// // Save file from path
 /// final path = await gallery.saveFileToGallery('/path/to/video.mp4');
 /// ```
-library just_save_gallery;
+library;
 
 export 'src/just_save_gallery.dart';
 export 'src/types/media_type.dart';

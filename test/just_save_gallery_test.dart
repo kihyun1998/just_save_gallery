@@ -1,10 +1,8 @@
-import 'dart:typed_data';
-
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:just_save_gallery/just_save_gallery.dart';
-import 'package:just_save_gallery/src/platform/platform_interface.dart';
 import 'package:just_save_gallery/src/platform/method_channel.dart';
+import 'package:just_save_gallery/src/platform/platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 /// A mock platform that records calls and can be configured to throw.

@@ -16,10 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'JustSaveGallery Playground',
-      theme: ThemeData(
-        colorSchemeSeed: Colors.blue,
-        useMaterial3: true,
-      ),
+      theme: ThemeData(colorSchemeSeed: Colors.blue, useMaterial3: true),
       home: const PlaygroundPage(),
     );
   }
@@ -83,8 +80,9 @@ class _PlaygroundPageState extends State<PlaygroundPage> {
   }
 
   Future<Uint8List?> _capturePreview() async {
-    final boundary = _previewKey.currentContext?.findRenderObject()
-        as RenderRepaintBoundary?;
+    final boundary =
+        _previewKey.currentContext?.findRenderObject()
+            as RenderRepaintBoundary?;
     if (boundary == null) return null;
 
     final image = await boundary.toImage(pixelRatio: 3.0);
@@ -173,10 +171,9 @@ class _PlaygroundPageState extends State<PlaygroundPage> {
               decoration: BoxDecoration(
                 color: _status.startsWith('Saved')
                     ? Colors.green.shade50
-                    : _status.startsWith('Error') ||
-                            _status.startsWith('Save')
-                        ? Colors.red.shade50
-                        : Colors.grey.shade100,
+                    : _status.startsWith('Error') || _status.startsWith('Save')
+                    ? Colors.red.shade50
+                    : Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: SelectableText(
@@ -187,9 +184,9 @@ class _PlaygroundPageState extends State<PlaygroundPage> {
                   color: _status.startsWith('Saved')
                       ? Colors.green.shade800
                       : _status.startsWith('Error') ||
-                              _status.startsWith('SaveException')
-                          ? Colors.red.shade800
-                          : Colors.grey.shade800,
+                            _status.startsWith('SaveException')
+                      ? Colors.red.shade800
+                      : Colors.grey.shade800,
                 ),
               ),
             ),
